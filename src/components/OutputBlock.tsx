@@ -9,13 +9,14 @@ interface OutputBlockProps {
   block: HistoryBlock;
   animate: boolean;
   onAnimationComplete?: () => void;
+  onCommand: (command: string) => void;
 }
 
-// Matches [anchor text](url) or bare URLs like github.com/foo/bar
+// Groups: (1,2) = [label](https://url)  (3,4) = [label](command)  (5) = bare URL
 const LINK_RE =
-  /\[([^\]]+)\]\((https?:\/\/[^)]+)\)|((?:https?:\/\/)?(?:[\w-]+\.)+\w{2,}\/[\w./?#=&%@:~-]*[\w/])/g;
+  /\[([^\]]+)\]\((https?:\/\/[^)]+)\)|\[([^\]]+)\]\((?!https?:\/\/)([^)]+)\)|((?:https?:\/\/)?(?:[\w-]+\.)+\w{2,}\/[\w./?#=&%@:~-]*[\w/])/g;
 
-function renderSegment(text: string, className?: string) {
+function renderSegment(text: string, className?: string, onCommand?: (cmd: string) => void) {
   const parts: React.ReactNode[] = [];
   let last = 0;
   LINK_RE.lastIndex = 0;
@@ -28,22 +29,42 @@ function renderSegment(text: string, className?: string) {
         </span>
       );
     }
-    const anchorText = match[1];
-    const anchorHref = match[2];
-    const bareUrl = match[3];
-    const label = anchorText ?? bareUrl;
-    const href = anchorHref ?? (bareUrl?.startsWith("http") ? bareUrl : `https://${bareUrl}`);
-    parts.push(
-      <a
-        key={match.index}
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${className ?? ""} underline decoration-dotted underline-offset-2 hover:text-accent transition-colors cursor-pointer`}
-      >
-        {label}
-      </a>
-    );
+
+    const urlLabel = match[1];
+    const urlHref  = match[2];
+    const cmdLabel = match[3];
+    const cmdName  = match[4];
+    const bareUrl  = match[5];
+
+    if (cmdLabel && cmdName) {
+      // [label](command-name) — runs a terminal command on Ctrl/Cmd+click
+      parts.push(
+        <span
+          key={match.index}
+          onClick={(e) => { if (e.ctrlKey || e.metaKey) onCommand?.(cmdName); }}
+          className={`${className ?? ""} text-accent font-semibold hover:text-accent/60 transition-colors cursor-pointer`}
+          title={`Ctrl+click to run: ${cmdName}`}
+        >
+          {cmdLabel}
+        </span>
+      );
+    } else {
+      // URL link or bare URL
+      const label = urlLabel ?? bareUrl;
+      const href  = urlHref ?? (bareUrl?.startsWith("http") ? bareUrl : `https://${bareUrl}`);
+      parts.push(
+        <a
+          key={match.index}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${className ?? ""} underline decoration-dotted underline-offset-2 hover:text-accent transition-colors cursor-pointer`}
+        >
+          {label}
+        </a>
+      );
+    }
+
     last = match.index + match[0].length;
   }
   if (last < text.length) {
@@ -53,17 +74,18 @@ function renderSegment(text: string, className?: string) {
       </span>
     );
   }
+
   return parts.length > 0 ? parts : [text];
 }
 
-function renderLine(line: string) {
+function renderLine(line: string, onCommand: (cmd: string) => void) {
   const parts = line.split("\x1b");
-  if (parts.length <= 1) return <>{renderSegment(line)}</>;
+  if (parts.length <= 1) return <>{renderSegment(line, undefined, onCommand)}</>;
 
   return (
     <>
       {parts.map((part, i) =>
-        renderSegment(part, i % 2 === 1 ? "text-accent font-semibold" : undefined)
+        renderSegment(part, i % 2 === 1 ? "text-accent font-semibold" : undefined, onCommand)
       )}
     </>
   );
@@ -83,6 +105,7 @@ export default function OutputBlock({
   block,
   animate,
   onAnimationComplete,
+  onCommand,
 }: OutputBlockProps) {
   return (
     <div className="mb-2">
@@ -111,7 +134,7 @@ export default function OutputBlock({
               }
               className={`leading-relaxed ${getLineClassName(line)}`}
             >
-              {line === "" ? "\u00A0" : renderLine(line)}
+              {line === "" ? "\u00A0" : renderLine(line, onCommand)}
             </motion.div>
           ))}
         </motion.div>

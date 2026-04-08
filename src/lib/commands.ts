@@ -33,8 +33,8 @@ export const commands: Record<string, CommandNode> = {
     lines: [
       "Available projects (type 'projects <name>' for details):",
       "",
-      "  \x1bfocus\x1b    — AI-powered scheduling assistant",
-      "  \x1bclaim\x1b    — Telegram-based service request platform",
+      "  \x1b[focus](focus)\x1b    — AI-powered scheduling assistant",
+      "  \x1b[claim](claim)\x1b    — Telegram-based service request platform",
     ],
     children: {
       focus: {

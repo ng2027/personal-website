@@ -7,12 +7,14 @@ interface TerminalOutputProps {
   history: HistoryBlock[];
   animatingId: number | null;
   onAnimationComplete: () => void;
+  onCommand: (command: string) => void;
 }
 
 export default function TerminalOutput({
   history,
   animatingId,
   onAnimationComplete,
+  onCommand,
 }: TerminalOutputProps) {
   return (
     <>
@@ -24,6 +26,7 @@ export default function TerminalOutput({
           onAnimationComplete={
             block.id === animatingId ? onAnimationComplete : undefined
           }
+          onCommand={onCommand}
         />
       ))}
     </>

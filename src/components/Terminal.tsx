@@ -98,6 +98,7 @@ export default function Terminal() {
           history={state.history}
           animatingId={animatingId}
           onAnimationComplete={handleAnimationComplete}
+          onCommand={handleCommand}
         />
       </div>
       <TerminalInput
