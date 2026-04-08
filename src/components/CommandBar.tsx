@@ -7,9 +7,10 @@ interface CommandBarProps {
   onCommand: (command: string) => void;
   disabled: boolean;
   currentPath: string[];
+  hasHistory: boolean;
 }
 
-export default function CommandBar({ onCommand, disabled, currentPath }: CommandBarProps) {
+export default function CommandBar({ onCommand, disabled, currentPath, hasHistory }: CommandBarProps) {
   const isRoot = currentPath.length === 0;
 
   let buttons: string[];
@@ -41,6 +42,17 @@ export default function CommandBar({ onCommand, disabled, currentPath }: Command
           {cmd === "back" ? "← back" : cmd}
         </button>
       ))}
+      {hasHistory && (
+        <button
+          onClick={() => !disabled && onCommand("clear")}
+          disabled={disabled}
+          className="px-2.5 py-0.5 text-[11px] rounded-md border transition-all duration-150
+            disabled:opacity-30 disabled:cursor-not-allowed active:scale-95
+            border-border/60 text-muted hover:text-red-400 hover:border-red-400/50 hover:bg-red-400/10 ml-auto"
+        >
+          clear
+        </button>
+      )}
     </div>
   );
 }

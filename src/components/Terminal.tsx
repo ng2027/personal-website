@@ -107,7 +107,7 @@ export default function Terminal() {
         onCommand={handleCommand}
         commandHistory={commandHistory}
       />
-      <CommandBar onCommand={handleCommand} disabled={state.isAnimating} currentPath={state.currentPath} />
+      <CommandBar onCommand={handleCommand} disabled={state.isAnimating} currentPath={state.currentPath} hasHistory={state.history.length > 0} />
     </div>
   );
 }
