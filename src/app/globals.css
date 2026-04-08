@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-bg: #0b0f17;
-  --color-surface: #141a27;
-  --color-border: #1e293b;
-  --color-text: #e2e8f0;
-  --color-muted: #64748b;
-  --color-accent: #a78bfa;
-  --color-cyan: #22d3ee;
-  --color-blue: #60a5fa;
+  --color-bg: #0d0c0b;
+  --color-surface: #161412;
+  --color-border: #2a1e14;
+  --color-text: #e8ddd0;
+  --color-muted: #6b5a47;
+  --color-accent: #c87941;
+  --color-cyan: #d4905a;
+  --color-blue: #e0a060;
   --font-mono: var(--font-jetbrains-mono);
 }
 
@@ -24,8 +24,8 @@ body {
 }
 
 ::selection {
-  background: var(--color-accent);
-  color: var(--color-bg);
+  background: #3a3530;
+  color: var(--color-text);
 }
 
 @keyframes blink {

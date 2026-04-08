@@ -6,7 +6,7 @@ interface ResolveResult {
   newPath: string[];
 }
 
-function getNodeAtPath(
+export function getNodeAtPath(
   path: string[],
   tree: Record<string, CommandNode>
 ): CommandNode | null {
