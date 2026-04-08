@@ -27,7 +27,7 @@ const SVG_W = MAX_CHARS * CHAR_W;
 const SVG_H = ASCII_LINES.length * LINE_H;
 
 const subLines = [
-  { text: "Software Engineer · Full Stack · AI/Systems", className: "text-muted" },
+  { text: "Software Engineer · Full Stack · AI/BackendSystems", className: "text-muted" },
   { text: "", className: "" },
   { text: 'Type "help" to see available commands.', className: "text-cyan/70" },
 ];

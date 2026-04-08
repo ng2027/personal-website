@@ -98,7 +98,9 @@ export default function TerminalInput({
   }, [disabled]);
 
   const focusInput = useCallback(() => {
-    inputRef.current?.focus();
+    if (window.matchMedia("(pointer: fine)").matches) {
+      inputRef.current?.focus();
+    }
   }, []);
 
   useEffect(() => {
